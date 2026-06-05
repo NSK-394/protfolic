@@ -321,11 +321,81 @@ body{font-family:'JetBrains Mono',monospace;color:var(--text);user-select:none}
 .wp-grid{
   position:absolute;inset:0;
   background-image:
-    linear-gradient(rgba(0,255,136,0.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,255,136,0.03) 1px,transparent 1px);
+    linear-gradient(rgba(0,255,136,0.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,136,0.025) 1px,transparent 1px);
   background-size:40px 40px;
   pointer-events:none;
 }
+
+/* PARTICLE CANVAS */
+#wp-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+
+/* HERO WIDGET */
+.widget-hero{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-55%);
+  background:rgba(13,17,23,0.75);backdrop-filter:blur(18px);
+  border:1px solid rgba(0,255,136,0.15);border-radius:16px;
+  padding:2rem 2.5rem;text-align:center;min-width:380px;
+  box-shadow:0 0 60px rgba(0,255,136,0.06),0 20px 60px rgba(0,0,0,0.4);
+  z-index:1;pointer-events:none;
+}
+.wh-greeting{font-size:0.6rem;color:var(--muted);letter-spacing:0.35em;text-transform:uppercase;margin-bottom:0.6rem}
+.wh-name{font-size:1.9rem;font-weight:700;color:var(--text);letter-spacing:0.05em;margin-bottom:0.4rem;line-height:1.1}
+.wh-name span{color:var(--green)}
+.wh-role{font-size:0.78rem;color:var(--blue);min-height:1.2rem;letter-spacing:0.05em;margin-bottom:1.4rem}
+.wh-divider{width:40px;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent);margin:0 auto 1.4rem}
+.wh-chips{display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem}
+.wh-chip{
+  font-size:0.58rem;padding:0.25rem 0.65rem;border-radius:20px;
+  border:1px solid;letter-spacing:0.08em;
+}
+.wh-chip.g{border-color:rgba(0,255,136,0.35);color:var(--green);background:rgba(0,255,136,0.07)}
+.wh-chip.b{border-color:rgba(88,166,255,0.35);color:var(--blue);background:rgba(88,166,255,0.07)}
+.wh-chip.p{border-color:rgba(188,140,255,0.35);color:var(--purple);background:rgba(188,140,255,0.07)}
+.wh-chip.r{border-color:rgba(255,107,107,0.35);color:var(--red);background:rgba(255,107,107,0.07)}
+.wh-actions{display:flex;gap:0.6rem;justify-content:center;pointer-events:all}
+.wh-btn{
+  font-size:0.62rem;padding:0.45rem 1rem;border-radius:6px;cursor:pointer;
+  font-family:inherit;letter-spacing:0.05em;transition:all 0.2s;border:1px solid;
+}
+.wh-btn.primary{background:var(--green);color:#000;border-color:var(--green);font-weight:600}
+.wh-btn.primary:hover{background:var(--green2);box-shadow:0 0 20px rgba(0,255,136,0.35)}
+.wh-btn.ghost{background:transparent;color:var(--muted);border-color:var(--border)}
+.wh-btn.ghost:hover{border-color:var(--blue);color:var(--blue)}
+
+/* STATS WIDGET */
+.widget-stats{
+  position:absolute;right:1.5rem;top:1rem;
+  background:rgba(13,17,23,0.75);backdrop-filter:blur(18px);
+  border:1px solid var(--border);border-radius:12px;
+  padding:1rem;min-width:170px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);z-index:1;
+}
+.ws-title{font-size:0.55rem;color:var(--muted);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:0.8rem}
+.ws-row{display:flex;align-items:center;gap:0.6rem;padding:0.4rem 0;border-bottom:1px solid rgba(48,54,61,0.5)}
+.ws-row:last-child{border-bottom:none}
+.ws-icon{font-size:0.85rem;width:20px;text-align:center;flex-shrink:0}
+.ws-info{flex:1}
+.ws-val{font-size:0.75rem;font-weight:600;color:var(--text);line-height:1}
+.ws-lbl{font-size:0.5rem;color:var(--muted);letter-spacing:0.1em;margin-top:0.1rem}
+
+/* STATUS WIDGET */
+.widget-status{
+  position:absolute;right:1.5rem;bottom:1rem;
+  background:rgba(13,17,23,0.75);backdrop-filter:blur(18px);
+  border:1px solid rgba(0,255,136,0.2);border-radius:10px;
+  padding:0.7rem 1rem;display:flex;align-items:center;gap:0.6rem;
+  box-shadow:0 0 20px rgba(0,255,136,0.05),0 10px 30px rgba(0,0,0,0.3);z-index:1;
+}
+.ws-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s ease-in-out infinite;flex-shrink:0}
+.ws-text{font-size:0.6rem;color:var(--text);line-height:1.5}
+.ws-text span{color:var(--muted);display:block;font-size:0.55rem}
+
+/* UPTIME TICKER */
+@keyframes countup{from{opacity:0}to{opacity:1}}
+.widget-hero,.widget-stats,.widget-status{animation:countup 0.6s ease both}
+.widget-stats{animation-delay:0.15s}
+.widget-status{animation-delay:0.3s}
 
 /* NOTIFICATION */
 .notif{
@@ -375,6 +445,7 @@ body{font-family:'JetBrains Mono',monospace;color:var(--text);user-select:none}
 <!-- DESKTOP -->
 <div id="desktop">
   <div class="wp-grid"></div>
+  <canvas id="wp-canvas"></canvas>
 
   <!-- TOP BAR -->
   <div class="topbar">
@@ -421,6 +492,56 @@ body{font-family:'JetBrains Mono',monospace;color:var(--text);user-select:none}
       <div class="icon" ondblclick="openWin('win-contact')">
         <div class="icon-img">📡</div>
         <div class="icon-label">Contact</div>
+      </div>
+    </div>
+
+    <!-- HERO WIDGET -->
+    <div class="widget-hero" id="widget-hero">
+      <div class="wh-greeting">Welcome to my portfolio</div>
+      <div class="wh-name">K. <span>Nikhil</span> Sai</div>
+      <div class="wh-role" id="wh-role"></div>
+      <div class="wh-divider"></div>
+      <div class="wh-chips">
+        <span class="wh-chip g">Python</span>
+        <span class="wh-chip b">FastAPI</span>
+        <span class="wh-chip p">LangChain</span>
+        <span class="wh-chip r">Cybersecurity</span>
+        <span class="wh-chip b">n8n</span>
+        <span class="wh-chip g">MCP Protocol</span>
+      </div>
+      <div class="wh-actions">
+        <button class="wh-btn primary" onclick="openWin('win-projects')">📁 View Projects</button>
+        <button class="wh-btn ghost" onclick="openWin('win-terminal')">⬛ Open Terminal</button>
+        <button class="wh-btn ghost" onclick="openWin('win-contact')">📡 Contact</button>
+      </div>
+    </div>
+
+    <!-- STATS WIDGET -->
+    <div class="widget-stats">
+      <div class="ws-title">Quick Stats</div>
+      <div class="ws-row">
+        <div class="ws-icon">🎓</div>
+        <div class="ws-info"><div class="ws-val">9.0 / 10</div><div class="ws-lbl">CGPA · SRM Chennai</div></div>
+      </div>
+      <div class="ws-row">
+        <div class="ws-icon">📦</div>
+        <div class="ws-info"><div class="ws-val">4 Projects</div><div class="ws-lbl">2 live · 1 sold · 1 startup</div></div>
+      </div>
+      <div class="ws-row">
+        <div class="ws-icon">🛡</div>
+        <div class="ws-info"><div class="ws-val">2 Certs</div><div class="ws-lbl">Palo Alto · AICTE 2026</div></div>
+      </div>
+      <div class="ws-row">
+        <div class="ws-icon">⏱</div>
+        <div class="ws-info"><div class="ws-val" id="uptime-val">0d 0h</div><div class="ws-lbl">Portfolio uptime</div></div>
+      </div>
+    </div>
+
+    <!-- STATUS WIDGET -->
+    <div class="widget-status">
+      <div class="ws-dot"></div>
+      <div class="ws-text">Available for internships &amp; freelance
+        <span>Cybersecurity · AI Engineering · Automation</span>
       </div>
     </div>
 
@@ -951,16 +1072,120 @@ function handleTermKey(e){
   askAI(cmd);
 }
 
+// ─── PARTICLE CANVAS ───
+(function(){
+  const cv=document.getElementById("wp-canvas");
+  const cx=cv.getContext("2d");
+  let W,H,pts=[],mouse={x:-999,y:-999};
+  const N=55,LINK=130,MLINK=160;
+
+  function resize(){
+    const a=document.getElementById("desktop-area");
+    W=cv.width=a.offsetWidth;H=cv.height=a.offsetHeight;
+  }
+
+  function mkPt(){
+    return{x:Math.random()*W,y:Math.random()*H,
+           vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,
+           r:Math.random()*1.5+.5};
+  }
+
+  function frame(){
+    cx.clearRect(0,0,W,H);
+    for(let i=0;i<N;i++){
+      const p=pts[i];
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>W)p.vx*=-1;
+      if(p.y<0||p.y>H)p.vy*=-1;
+      // particle-particle links
+      for(let j=i+1;j<N;j++){
+        const q=pts[j],dx=p.x-q.x,dy=p.y-q.y,d=Math.hypot(dx,dy);
+        if(d<LINK){
+          cx.beginPath();
+          cx.strokeStyle=`rgba(0,255,136,${.18*(1-d/LINK)})`;
+          cx.lineWidth=.6;
+          cx.moveTo(p.x,p.y);cx.lineTo(q.x,q.y);cx.stroke();
+        }
+      }
+      // mouse links
+      const md=Math.hypot(p.x-mouse.x,p.y-mouse.y);
+      if(md<MLINK){
+        cx.beginPath();
+        cx.strokeStyle=`rgba(88,166,255,${.35*(1-md/MLINK)})`;
+        cx.lineWidth=.8;
+        cx.moveTo(p.x,p.y);cx.lineTo(mouse.x,mouse.y);cx.stroke();
+      }
+      // dot
+      cx.beginPath();
+      cx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      cx.fillStyle="rgba(0,255,136,0.55)";
+      cx.fill();
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function init(){
+    resize();
+    pts=Array.from({length:N},mkPt);
+    frame();
+  }
+
+  document.getElementById("desktop-area").addEventListener("mousemove",e=>{
+    const r=cv.getBoundingClientRect();
+    mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;
+  });
+  document.getElementById("desktop-area").addEventListener("mouseleave",()=>{mouse.x=-999;mouse.y=-999;});
+  window.addEventListener("resize",()=>{resize();});
+
+  // start after desktop is shown
+  window._initParticles=init;
+})();
+
+// ─── ROLE TYPER ───
+(function(){
+  const roles=["AI Systems Builder","Cybersecurity Researcher","1st Year @ SRM · CGPA 9.0","FastAPI & Python Developer","Automation Engineer · n8n","Freelance AI Consultant","CTF Player · Security Nerd"];
+  let ri=0,ci=0,del=false;
+  const el=document.getElementById("wh-role");
+  function type(){
+    if(!el)return;
+    const cur=roles[ri];
+    if(!del){
+      el.textContent=cur.slice(0,++ci);
+      if(ci===cur.length){del=true;setTimeout(type,2200);return;}
+    }else{
+      el.textContent=cur.slice(0,--ci);
+      if(ci===0){del=false;ri=(ri+1)%roles.length;}
+    }
+    setTimeout(type,del?40:75);
+  }
+  window._initTyper=type;
+})();
+
+// ─── UPTIME COUNTER ───
+function startUptime(){
+  const start=Date.now();
+  function tick(){
+    const s=Math.floor((Date.now()-start)/1000);
+    const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
+    const el=document.getElementById("uptime-val");
+    if(el)el.textContent=`${h}h ${m}m ${sec}s`;
+    setTimeout(tick,1000);
+  }
+  tick();
+}
+
 // ─── INIT DESKTOP ───
 function initDesktop(){
-  // Open terminal by default
   setTimeout(()=>{
     openWin("win-terminal");
     document.getElementById("term-input").focus();
   },300);
-  // Set date
   const d=new Date();
   document.getElementById("tb-date").textContent=d.toLocaleDateString("en-US",{month:"short",year:"numeric"});
+  // start desktop widgets
+  if(window._initParticles)window._initParticles();
+  if(window._initTyper)window._initTyper();
+  startUptime();
 }
 </script>
 </body>
