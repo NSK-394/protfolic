@@ -283,6 +283,31 @@ body{font-family:'JetBrains Mono',monospace;color:var(--text);user-select:none}
   border-radius:6px;margin-top:1rem;font-size:0.65rem;color:var(--green);
 }
 
+/* CERTS WINDOW */
+#win-certs{width:620px;height:440px;top:60px;left:200px}
+.certs-body{flex:1;overflow-y:auto;padding:1.2rem}
+.certs-body::-webkit-scrollbar{width:4px}
+.certs-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.cert-card{
+  display:flex;gap:1rem;padding:1rem;border:1px solid var(--border);
+  border-radius:8px;margin-bottom:0.8rem;transition:all 0.2s;
+  background:var(--bg3);
+}
+.cert-card:hover{border-color:var(--green);background:rgba(0,255,136,0.03)}
+.cert-icon{font-size:2rem;flex-shrink:0;width:44px;text-align:center;padding-top:0.1rem}
+.cert-info{flex:1}
+.cert-title{font-size:0.72rem;font-weight:600;color:var(--text);margin-bottom:0.2rem}
+.cert-issuer{font-size:0.6rem;color:var(--blue);margin-bottom:0.3rem;letter-spacing:0.05em}
+.cert-meta{display:flex;gap:0.6rem;flex-wrap:wrap}
+.cert-badge{font-size:0.52rem;padding:0.15rem 0.5rem;border-radius:3px;border:1px solid}
+.cert-badge.g{border-color:rgba(0,255,136,0.3);color:var(--green);background:rgba(0,255,136,0.06)}
+.cert-badge.b{border-color:rgba(88,166,255,0.3);color:var(--blue);background:rgba(88,166,255,0.06)}
+.cert-badge.p{border-color:rgba(188,140,255,0.3);color:var(--purple);background:rgba(188,140,255,0.06)}
+.cert-badge.y{border-color:rgba(227,179,65,0.3);color:var(--yellow);background:rgba(227,179,65,0.06)}
+.certs-header{font-size:0.55rem;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;
+  margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem}
+.certs-header::after{content:'';flex:1;height:1px;background:var(--border)}
+
 /* TASKBAR */
 .taskbar{
   height:var(--taskbar-h);background:rgba(13,17,23,0.95);
@@ -493,6 +518,10 @@ body{font-family:'JetBrains Mono',monospace;color:var(--text);user-select:none}
         <div class="icon-img">📡</div>
         <div class="icon-label">Contact</div>
       </div>
+      <div class="icon" ondblclick="openWin('win-certs')">
+        <div class="icon-img">🏆</div>
+        <div class="icon-label">Certs</div>
+      </div>
     </div>
 
     <!-- HERO WIDGET -->
@@ -525,11 +554,11 @@ body{font-family:'JetBrains Mono',monospace;color:var(--text);user-select:none}
       </div>
       <div class="ws-row">
         <div class="ws-icon">📦</div>
-        <div class="ws-info"><div class="ws-val">4 Projects</div><div class="ws-lbl">2 live · 1 sold · 1 startup</div></div>
+        <div class="ws-info"><div class="ws-val">13 Projects</div><div class="ws-lbl">AI · Security · Web · CTF</div></div>
       </div>
       <div class="ws-row">
         <div class="ws-icon">🛡</div>
-        <div class="ws-info"><div class="ws-val">2 Certs</div><div class="ws-lbl">Palo Alto · AICTE 2026</div></div>
+        <div class="ws-info"><div class="ws-val">4 Certs</div><div class="ws-lbl">Palo Alto · AICTE · n8n · SRM</div></div>
       </div>
       <div class="ws-row">
         <div class="ws-icon">⏱</div>
@@ -555,7 +584,7 @@ body{font-family:'JetBrains Mono',monospace;color:var(--text);user-select:none}
       </div>
       <div class="win-content">
         <div class="terminal-body" id="terminal-output">
-          <div class="t-output green">NSK-OS v1.0 // AI Terminal — Powered by GPT-4o</div>
+          <div class="t-output green">NSK-OS v1.2 // AI Terminal — Type help to explore</div>
           <div class="t-output">Type <span style="color:var(--green)">help</span> to see available commands, or ask me anything!</div>
           <div class="t-output" style="margin-bottom:0.8rem">─────────────────────────────────────────────────────────</div>
         </div>
@@ -632,15 +661,7 @@ body{font-family:'JetBrains Mono',monospace;color:var(--text);user-select:none}
       </div>
       <div class="win-content">
         <div class="explorer-body">
-          <div class="explorer-sidebar">
-            <div class="exp-section">
-              <div class="exp-section-label">Projects</div>
-              <div class="exp-item active" onclick="showProject(0,this)">📁 JARVIS AI</div>
-              <div class="exp-item" onclick="showProject(1,this)">📁 Vigil AI</div>
-              <div class="exp-item" onclick="showProject(2,this)">📁 GraspAI</div>
-              <div class="exp-item" onclick="showProject(3,this)">📁 AI Receptionist</div>
-            </div>
-          </div>
+          <div class="explorer-sidebar" id="proj-sidebar"></div>
           <div class="explorer-main" id="proj-main"></div>
         </div>
       </div>
@@ -712,6 +733,88 @@ body{font-family:'JetBrains Mono',monospace;color:var(--text);user-select:none}
       <div class="win-resize" onmousedown="startResize(event,'win-contact')"></div>
     </div>
 
+    <!-- CERTS WINDOW -->
+    <div class="win hidden" id="win-certs">
+      <div class="win-titlebar" onmousedown="startDrag(event,'win-certs')">
+        <div class="win-btn close" onclick="closeWin('win-certs')"></div>
+        <div class="win-btn min" onclick="closeWin('win-certs')"></div>
+        <div class="win-btn max"></div>
+        <div class="win-title">certs.db — Certifications &amp; Achievements</div>
+      </div>
+      <div class="win-content">
+        <div class="certs-body">
+          <div class="certs-header">Cybersecurity</div>
+          <div class="cert-card">
+            <div class="cert-icon">🛡</div>
+            <div class="cert-info">
+              <div class="cert-title">Cybersecurity Virtual Internship</div>
+              <div class="cert-issuer">Palo Alto Networks × AICTE — EduSkills</div>
+              <div class="cert-meta">
+                <span class="cert-badge g">Jan–Mar 2026</span>
+                <span class="cert-badge b">Palo Alto XSIAM</span>
+                <span class="cert-badge b">SOC Operations</span>
+                <span class="cert-badge p">Threat Detection</span>
+              </div>
+            </div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-icon">🔐</div>
+            <div class="cert-info">
+              <div class="cert-title">Ethical Hacking &amp; Penetration Testing</div>
+              <div class="cert-issuer">OverTheWire / HackTheBox — Self-directed</div>
+              <div class="cert-meta">
+                <span class="cert-badge g">Ongoing</span>
+                <span class="cert-badge r">CTF Competitions</span>
+                <span class="cert-badge b">Linux PrivEsc</span>
+                <span class="cert-badge p">Web Exploitation</span>
+              </div>
+            </div>
+          </div>
+          <div class="certs-header" style="margin-top:1rem">AI &amp; Automation</div>
+          <div class="cert-card">
+            <div class="cert-icon">🤖</div>
+            <div class="cert-info">
+              <div class="cert-title">AI Deployment &amp; Automation</div>
+              <div class="cert-issuer">AICTE × EduSkills — Virtual Internship</div>
+              <div class="cert-meta">
+                <span class="cert-badge g">Apr–Jun 2026</span>
+                <span class="cert-badge b">LLM Deployment</span>
+                <span class="cert-badge b">Automation</span>
+                <span class="cert-badge p">AI Engineering</span>
+              </div>
+            </div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-icon">⚡</div>
+            <div class="cert-info">
+              <div class="cert-title">n8n Automation Specialist</div>
+              <div class="cert-issuer">n8n.io — Community Verified</div>
+              <div class="cert-meta">
+                <span class="cert-badge g">2025–2026</span>
+                <span class="cert-badge b">Workflow Automation</span>
+                <span class="cert-badge b">API Integration</span>
+                <span class="cert-badge y">Sold Projects</span>
+              </div>
+            </div>
+          </div>
+          <div class="certs-header" style="margin-top:1rem">Academic</div>
+          <div class="cert-card">
+            <div class="cert-icon">🎓</div>
+            <div class="cert-info">
+              <div class="cert-title">B.Tech Computer Science — Cybersecurity Specialization</div>
+              <div class="cert-issuer">SRM Institute of Science &amp; Technology, Chennai</div>
+              <div class="cert-meta">
+                <span class="cert-badge g">CGPA: 9.0 / 10</span>
+                <span class="cert-badge b">2024–2028</span>
+                <span class="cert-badge p">1st Year</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="win-resize" onmousedown="startResize(event,'win-certs')"></div>
+    </div>
+
   </div><!-- end desktop-area -->
 
   <!-- TASKBAR -->
@@ -730,6 +833,9 @@ body{font-family:'JetBrains Mono',monospace;color:var(--text);user-select:none}
     </button>
     <button class="task-btn" onclick="openWin('win-contact')" id="tb-contact">
       <span class="task-icon">📡</span>Contact
+    </button>
+    <button class="task-btn" onclick="openWin('win-certs')" id="tb-certs">
+      <span class="task-icon">🏆</span>Certs
     </button>
     <div class="taskbar-sep"></div>
     <div class="taskbar-right">
@@ -836,7 +942,7 @@ updateClock();setInterval(updateClock,1000);
 
 // ─── WINDOW MANAGEMENT ───
 let zTop=100;
-const winMap={"win-terminal":"tb-terminal","win-about":"tb-about","win-projects":"tb-projects","win-skills":"tb-skills","win-contact":"tb-contact"};
+const winMap={"win-terminal":"tb-terminal","win-about":"tb-about","win-projects":"tb-projects","win-skills":"tb-skills","win-contact":"tb-contact","win-certs":"tb-certs"};
 
 function openWin(id){
   const w=document.getElementById(id);
@@ -845,7 +951,7 @@ function openWin(id){
   w.style.zIndex=++zTop;
   const tb=document.getElementById(winMap[id]);
   if(tb)tb.classList.add("active");
-  if(id==="win-projects")showProject(0,document.querySelector(".exp-item.active"));
+  if(id==="win-projects"){buildSidebar();filterCat("all",document.querySelector(".exp-item"));}
   if(id==="win-skills")renderSkills();
   hideCtx();
 }
@@ -911,25 +1017,83 @@ function showNotif(title,body){
 
 // ─── PROJECTS DATA ───
 const projects=[
-  {id:"NSK-001",name:"JARVIS AI",desc:"Advanced personal AI OS with cross-AI shared memory vault connecting Claude and ChatGPT. Features MCP server, REST API, Chrome automation, Cloudflare tunnels, and a Hetzner VPS brain. The most sophisticated personal AI system built by a 1st year student.",tags:[["Python","green"],["MCP Protocol","blue"],["Obsidian","purple"],["Hetzner VPS","red"],["LangChain","blue"]],stats:[["Status","✅ Live at jarvis.nikhilsai.uk"],["Stack","Python, FastAPI, n8n"],["GitHub","github.com/NSK-394"],["Type","Personal AI System"]]},
-  {id:"NSK-002",name:"Vigil AI",desc:"Production-grade API abuse detection platform. Real FastAPI + Express middleware with live Slack & Gmail alerts, .env security, and 26/26 passing tests. Posted on Twitter with #buildinpublic. Landing page live on Vercel, submitted to Product Hunt.",tags:[["FastAPI","red"],["Security","red"],["Express.js","green"],["Vercel","blue"],["26/26 Tests","green"]],stats:[["Status","✅ Live on Vercel"],["Tests","26/26 passing"],["GitHub","github.com/NSK-394/Vigil-AI"],["Type","Security Platform"]]},
-  {id:"NSK-003",name:"GraspAI",desc:"Startup solving the AGI authenticity crisis. Students paste AI-generated work, undergo a 5-minute live AI video interview, receive a Comprehension Certificate. Companies pay ₹500/verification. Indian vernacular layer is primary moat. E-cell pitch ready.",tags:[["Startup","green"],["LLMs","blue"],["Video AI","purple"],["SaaS","green"],["₹500/verify","yellow"]],stats:[["Status","🔨 MVP in development"],["Revenue target","₹500 per verification"],["Moat","Indian vernacular layer"],["Type","EdTech Startup"]]},
-  {id:"NSK-004",name:"AI Receptionist",desc:"Full n8n automation system sold to dental clinics. Website chatbot (Vercel) → ngrok tunnel → n8n webhook → AI response + Google Calendar integration + Google Sheets lead capture (Append/Update matching on Phone) + email alerts.",tags:[["n8n","green"],["Automation","blue"],["Google Calendar","green"],["Freelance","purple"],["Sold","green"]],stats:[["Status","✅ Sold to dental clinics"],["Stack","n8n, Vercel, ngrok, Sheets"],["Pricing","₹4.5k–₹15k"],["Type","Freelance Product"]]},
+  // AI SYSTEMS
+  {id:"NSK-001",cat:"ai",name:"JARVIS AI",desc:"Advanced personal AI OS with cross-AI shared memory vault connecting Claude and ChatGPT. Features MCP server, REST API, Chrome automation, Cloudflare tunnels, and a Hetzner VPS brain.",tags:[["Python","green"],["MCP Protocol","blue"],["LangChain","blue"],["Hetzner VPS","red"],["n8n","green"]],stats:[["Status","✅ Live at jarvis.nikhilsai.uk"],["Stack","Python, FastAPI, n8n"],["GitHub","github.com/NSK-394/jarvis-ai"],["Type","Personal AI System"]]},
+  {id:"NSK-002",cat:"ai",name:"Vigil AI",desc:"Production-grade API abuse detection platform. 4 AI agents (Monitor, Detection, Decision, Response) with dual-engine ML + rule fusion, persistent behavioral memory, and explainable reasoning traces. 26/26 tests passing.",tags:[["FastAPI","red"],["4 AI Agents","blue"],["ML + Rules","green"],["Vercel","blue"],["26/26 Tests","green"]],stats:[["Status","✅ Live on Vercel"],["Tests","26/26 passing"],["GitHub","github.com/NSK-394/Vigil-AI"],["Type","Security Platform"]]},
+  {id:"NSK-005",cat:"ai",name:"AI Video Agent",desc:"Autonomous AI video editing system that analyzes reference videos and recreates their editing style in DaVinci Resolve. Features beat-sync, semantic clip ranking, and a cinematic effect engine.",tags:[["Python","green"],["YOLOv8","blue"],["DaVinci Resolve","purple"],["Beat-Sync","green"],["Autonomous","blue"]],stats:[["Status","🔨 In development"],["Stack","Python, YOLOv8, DaVinci API"],["GitHub","github.com/NSK-394/ai-video-agent"],["Type","AI Creative Tool"]]},
+  {id:"NSK-006",cat:"ai",name:"AI CCTV Checker",desc:"Real-time AI CCTV surveillance system combining YOLOv8 object detection with GPT-4o-mini scene analysis. Features live event tracking, threat classification, and a HUD overlay display.",tags:[["YOLOv8","green"],["GPT-4o-mini","blue"],["OpenCV","purple"],["Real-time","red"]],stats:[["Status","✅ Complete"],["Stack","Python, YOLOv8, OpenCV"],["GitHub","github.com/NSK-394/Ai-cctv-checker"],["Type","Computer Vision"]]},
+  {id:"NSK-007",cat:"ai",name:"Cross-AI Memory Vault",desc:"Persistent shared memory layer connecting ChatGPT, Claude, and JARVIS — unified long-term context across all AI tools via a central REST API. Solves the cross-session amnesia problem for AI systems.",tags:[["Python","green"],["Claude API","blue"],["OpenAI","purple"],["FastAPI","green"],["Memory","blue"]],stats:[["Status","✅ Live"],["Stack","Python, FastAPI, SQLite"],["GitHub","github.com/NSK-394/cross-ai-memory-vault"],["Type","AI Infrastructure"]]},
+  // STARTUPS
+  {id:"NSK-003",cat:"startup",name:"GraspAI",desc:"EdTech startup solving the AI authenticity crisis. Students paste AI-generated work, undergo a 5-minute live AI video interview, receive a Comprehension Certificate. Companies pay ₹500/verification. Indian vernacular layer is the primary moat.",tags:[["Startup","green"],["LLMs","blue"],["Video AI","purple"],["SaaS","green"],["₹500/verify","yellow"]],stats:[["Status","🔨 MVP in development"],["Revenue","₹500 per verification"],["Moat","Indian vernacular layer"],["Type","EdTech Startup"]]},
+  {id:"NSK-004",cat:"startup",name:"AI Receptionist",desc:"Full n8n automation system sold to dental clinics. Website chatbot (Vercel) → ngrok → n8n webhook → AI response + Google Calendar integration + Google Sheets lead capture + email alerts. Already generating revenue.",tags:[["n8n","green"],["Automation","blue"],["Google Calendar","green"],["Sold","green"],["Freelance","purple"]],stats:[["Status","✅ Sold to dental clinics"],["Stack","n8n, Vercel, ngrok, Sheets"],["Pricing","₹4.5k–₹15k"],["Type","Freelance Product"]]},
+  // WEB / SAAS
+  {id:"NSK-008",cat:"web",name:"DiagBill",desc:"Full-stack SaaS billing system for diagnostic centers. Handles patient management, test billing, report generation, and payment tracking in one clean interface.",tags:[["Full Stack","green"],["SaaS","blue"],["Billing","purple"],["JavaScript","green"]],stats:[["Status","✅ Demo live"],["Stack","HTML, CSS, JS, Node.js"],["GitHub","github.com/NSK-394/diagbill"],["Type","SaaS Product"]]},
+  {id:"NSK-009",cat:"web",name:"SnapChoice",desc:"Decision-support web app using weighted multi-criteria scoring with explainable AI recommendations. Users input options and criteria, the system scores and ranks them with clear reasoning.",tags:[["JavaScript","green"],["Decision AI","blue"],["Web App","green"]],stats:[["Status","✅ Live"],["Stack","HTML, CSS, Vanilla JS"],["GitHub","github.com/NSK-394/SnapChoice"],["Type","Web Tool"]]},
+  // SECURITY TOOLS
+  {id:"NSK-010",cat:"security",name:"URL Phishing Detector",desc:"ML-powered URL classifier for phishing detection using lexical and host-based features. Trained on real phishing datasets with scikit-learn. Detects malicious URLs with high accuracy.",tags:[["Python","green"],["scikit-learn","blue"],["Cybersecurity","red"],["ML","blue"]],stats:[["Status","✅ Complete"],["Stack","Python, sklearn, pandas"],["GitHub","github.com/NSK-394/URL-Phishing-Dectector."],["Type","Security ML"]]},
+  {id:"NSK-011",cat:"security",name:"Steganography Tool",desc:"Image steganography tool to hide and extract secret messages inside PNG/BMP files using LSB encoding. Can encrypt the hidden payload before embedding.",tags:[["Python","green"],["Cryptography","purple"],["LSB Encoding","blue"],["Security","red"]],stats:[["Status","✅ Complete"],["Stack","Python, Pillow"],["GitHub","github.com/NSK-394/Steganography-Project-"],["Type","Security Tool"]]},
+  {id:"NSK-012",cat:"security",name:"Hash Cracker",desc:"Hash cracking tool supporting MD5, SHA1, and SHA256 with both dictionary attack and brute-force modes. Built for cybersecurity coursework to understand password security.",tags:[["Python","green"],["Cryptography","purple"],["Dictionary Attack","red"],["Security","red"]],stats:[["Status","✅ Complete"],["Stack","Python, hashlib"],["GitHub","github.com/NSK-394/Basic-Hash-Cracker-project"],["Type","Security Tool"]]},
+  {id:"NSK-013",cat:"security",name:"Port Scanner",desc:"Fast Python port scanner with service detection and concurrent multi-threaded scanning. Identifies open ports and running services on target hosts for network reconnaissance.",tags:[["Python","green"],["Networking","blue"],["Threading","green"],["Security","red"]],stats:[["Status","✅ Complete"],["Stack","Python, socket, threading"],["GitHub","github.com/NSK-394/Port-scanner"],["Type","Network Security"]]},
+  // CTF
+  {id:"NSK-014",cat:"ctf",name:"CTF Write-ups",desc:"Competition write-ups and solutions across web exploitation, binary analysis, cryptography, and reverse engineering. Also includes OverTheWire Bandit solutions for Linux privilege escalation.",tags:[["CTF","green"],["Web Exploit","red"],["Cryptography","purple"],["Reverse Eng","blue"]],stats:[["Status","🔄 Ongoing"],["Platforms","HackTheBox, OverTheWire"],["GitHub","github.com/NSK-394/my-CTF-write-ups"],["Type","CTF / Research"]]},
 ];
-function showProject(i,el){
+
+const catLabels={all:"All",ai:"🤖 AI Systems",startup:"🚀 Startups",web:"🌐 Web / SaaS",security:"🛡 Security",ctf:"🚩 CTF / Research"};
+let activeCat="all";
+
+function buildSidebar(){
+  const sidebar=document.querySelector(".explorer-sidebar");
+  // Category filter section
+  let catHtml=`<div class="exp-section"><div class="exp-section-label">Category</div>`;
+  Object.entries(catLabels).forEach(([k,v])=>{
+    catHtml+=`<div class="exp-item${k==="all"?" active":""}" onclick="filterCat('${k}',this)">${v} <span style="color:var(--muted);font-size:0.5rem;margin-left:auto">${k==="all"?projects.length:projects.filter(p=>p.cat===k).length}</span></div>`;
+  });
+  catHtml+=`</div>`;
+  sidebar.innerHTML=catHtml;
+}
+
+function filterCat(cat,el){
+  activeCat=cat;
   document.querySelectorAll(".exp-item").forEach(x=>x.classList.remove("active"));
   if(el)el.classList.add("active");
-  const p=projects[i];
+  const filtered=cat==="all"?projects:projects.filter(p=>p.cat===cat);
+  // rebuild project list section
+  let listHtml=`<div class="exp-section" id="proj-list-section"><div class="exp-section-label">Projects</div>`;
+  filtered.forEach((p,i)=>{
+    listHtml+=`<div class="exp-item" onclick="showProjectById('${p.id}',this)">📁 ${p.name}</div>`;
+  });
+  listHtml+=`</div>`;
+  const existing=document.getElementById("proj-list-section");
+  const sidebar=document.querySelector(".explorer-sidebar");
+  if(existing)existing.remove();
+  sidebar.insertAdjacentHTML("beforeend",listHtml);
+  // auto-show first
+  const firstItem=document.querySelector("#proj-list-section .exp-item");
+  if(firstItem)showProjectById(filtered[0].id,firstItem);
+}
+
+function showProjectById(id,el){
+  document.querySelectorAll("#proj-list-section .exp-item").forEach(x=>x.classList.remove("active"));
+  if(el)el.classList.add("active");
+  const p=projects.find(x=>x.id===id);
+  if(!p)return;
   const m=document.getElementById("proj-main");
+  const ghLink=p.stats.find(s=>s[0]==="GitHub");
   m.innerHTML=`
     <div class="proj-header">
       <div class="proj-title">${p.name}</div>
-      <div class="proj-id">${p.id} // PROJECT FILE</div>
+      <div class="proj-id">${p.id} // ${catLabels[p.cat]||p.cat}</div>
     </div>
     <div class="proj-desc">${p.desc}</div>
     <div class="proj-tags">${p.tags.map(t=>`<span class="proj-tag ${t[1]}">${t[0]}</span>`).join("")}</div>
     ${p.stats.map(s=>`<div class="proj-stat"><span class="proj-stat-label">${s[0]}</span>${s[1]}</div>`).join("")}
+    ${ghLink?`<a href="https://${ghLink[1]}" target="_blank" style="display:inline-block;margin-top:0.8rem;font-size:0.62rem;color:var(--blue);border:1px solid rgba(88,166,255,0.3);padding:0.3rem 0.7rem;border-radius:4px;text-decoration:none;">↗ View on GitHub</a>`:""}
   `;
+}
+
+function showProject(i,el){
+  const p=projects[i];if(!p)return;
+  showProjectById(p.id,el);
 }
 
 // ─── SKILLS ───
@@ -963,10 +1127,29 @@ const exactCmds={
   whoami:`K. Nikhil Sai  |  18  |  Chennai, India
 1st year B.Tech CS (Cybersecurity) @ SRM Institute  |  CGPA: 9.0
 Builder. Security researcher. AI systems nerd.`,
-  "ls projects":`NSK-001  JARVIS AI        — Personal AI OS with cross-AI memory vault
-NSK-002  Vigil AI         — Production API abuse detection platform
-NSK-003  GraspAI          — Startup: AI interview → Comprehension Certificate
-NSK-004  AI Receptionist  — n8n automation sold to dental clinics`,
+  "ls projects":`🤖 AI SYSTEMS
+  NSK-001  JARVIS AI            — Personal AI OS, cross-AI memory vault
+  NSK-002  Vigil AI             — API abuse detection, 26/26 tests live
+  NSK-005  AI Video Agent       — Autonomous video editor, DaVinci Resolve
+  NSK-006  AI CCTV Checker      — YOLOv8 + GPT-4o-mini surveillance
+  NSK-007  Cross-AI Memory Vault— Unified memory for Claude + ChatGPT
+
+🚀 STARTUPS
+  NSK-003  GraspAI              — AI interview → Comprehension Certificate
+  NSK-004  AI Receptionist      — n8n automation, sold to dental clinics
+
+🌐 WEB / SAAS
+  NSK-008  DiagBill             — Diagnostic center billing SaaS
+  NSK-009  SnapChoice           — AI-scored decision support tool
+
+🛡 SECURITY TOOLS
+  NSK-010  URL Phishing Detector— ML classifier, sklearn
+  NSK-011  Steganography Tool   — LSB encoding hide/extract
+  NSK-012  Hash Cracker         — MD5/SHA1/SHA256 dict + brute
+  NSK-013  Port Scanner         — Multi-threaded service detection
+
+🚩 CTF / RESEARCH
+  NSK-014  CTF Write-ups        — HackTheBox, OverTheWire`,
   ls:`projects/  skills/  contact.sh  about.md  README`,
   skills:`Languages:     Python 92% | JS/TS 78% | FastAPI 85% | Node.js 75%
 AI/Automation: LangChain 80% | n8n 85% | LLM Prompting 90% | RAG 75%
@@ -997,7 +1180,7 @@ const patterns=[
   [/cgpa|gpa|grade|marks/,`CGPA: 9.0 / 10 at SRM Institute (1st year).`],
   [/startup|grasp|ecell/,`GraspAI is my EdTech startup — pitching at E-cell, MVP in development. Solving the "AI-generated work" problem in education.`],
   [/security|cyber|soc|palo|xsiam/,`Cybersecurity stack: SOC operations, API security, threat detection, SOAR, Palo Alto XSIAM. Certified via Palo Alto × AICTE 2026.`],
-  [/project|build|make/,`I've built: JARVIS AI (personal AI OS), Vigil AI (API security), GraspAI (EdTech startup), AI Receptionist (sold to clinics). Type 'ls projects' for details.`],
+  [/project|build|make/,`I've built 13 projects: AI systems (JARVIS, Vigil AI, AI CCTV, AI Video Agent), startups (GraspAI, AI Receptionist), security tools (phishing detector, port scanner, steganography, hash cracker), and more. Type 'ls projects' for the full list.`],
 ];
 
 function getLocalResponse(cmd){
